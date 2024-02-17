@@ -10,7 +10,7 @@ import (
 func TestMergeComparableSlicesUnique(t *testing.T) {
 	src := []int{1, 2, 3}
 	patch := []int{3, 4, 5}
-	merged, err := mergeComparableSlicesUnique(reflect.ValueOf(src), reflect.ValueOf(patch), Options{})
+	merged, err := mergeComparableSlicesUnique(reflect.ValueOf(src), reflect.ValueOf(patch))
 	require.NoError(t, err)
 	require.Equal(t, []int{1, 2, 3, 4, 5}, merged.Interface().([]int))
 	require.Equal(t, []int{1, 2, 3}, src)
@@ -20,7 +20,7 @@ func TestMergeSlicesByIndex(t *testing.T) {
 	t.Run("ints", func(t *testing.T) {
 		src := []int{1, 2, 3}
 		patch := []int{3, 0, 5, 6}
-		merged, err := mergeSlicesByIndex(reflect.ValueOf(src), reflect.ValueOf(patch), Options{})
+		merged, err := mergeSlicesByIndex(reflect.ValueOf(src), reflect.ValueOf(patch), newMergeContext(Options{}))
 		require.NoError(t, err)
 		require.Equal(t, []int{3, 2, 5, 6}, merged.Interface().([]int))
 		require.Equal(t, []int{1, 2, 3}, src)
@@ -36,7 +36,7 @@ func TestMergeSlicesByIndex(t *testing.T) {
 			nil,
 			func() int { return 4 },
 		}
-		merged, err := mergeSlicesByIndex(reflect.ValueOf(src), reflect.ValueOf(patch), Options{})
+		merged, err := mergeSlicesByIndex(reflect.ValueOf(src), reflect.ValueOf(patch), newMergeContext(Options{}))
 		require.NoError(t, err)
 		require.Len(t, merged.Interface().([]func() int), 3)
 		require.Equal(t, 3, merged.Index(0).Interface().(func() int)())

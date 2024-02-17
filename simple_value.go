@@ -4,7 +4,7 @@ import (
 	"reflect"
 )
 
-func mergeSimpleValue(src reflect.Value, patch reflect.Value, _ Options) (reflect.Value, error) {
+func mergeSimpleValue(src reflect.Value, patch reflect.Value) (reflect.Value, error) {
 	if patch.IsZero() || reflect.DeepEqual(src, patch) {
 		return src, nil
 	}

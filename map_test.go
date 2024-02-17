@@ -22,7 +22,7 @@ func TestMergeMaps(t *testing.T) {
 			"f": "g",
 			"h": "i",
 		}
-		res, err := mergeMaps(reflect.ValueOf(src), reflect.ValueOf(patch), NewOptions())
+		res, err := mergeMaps(reflect.ValueOf(src), reflect.ValueOf(patch), newMergeContext(NewOptions()))
 		require.NoError(t, err)
 		require.Equal(t, map[string]string{
 			"a": "bb",
@@ -51,7 +51,7 @@ func TestMergeMaps(t *testing.T) {
 			"c": nil,
 			"f": func() string { return "patch" },
 		}
-		res, err := mergeMaps(reflect.ValueOf(src), reflect.ValueOf(patch), NewOptions())
+		res, err := mergeMaps(reflect.ValueOf(src), reflect.ValueOf(patch), newMergeContext(NewOptions()))
 		require.NoError(t, err)
 		require.Len(t, res.Interface(), 5)
 		resMap := res.Interface().(map[string]func() string)

@@ -341,3 +341,43 @@ func TestMerge(t *testing.T) {
 		}, patch.M)
 	})
 }
+
+type recursiveTestStruct struct {
+	P *recursiveTestStruct
+	I int
+}
+
+func TestRecursiveMerge(t *testing.T) {
+	src1 := recursiveTestStruct{
+		I: 1,
+	}
+	src2 := recursiveTestStruct{
+		P: &src1,
+		I: 2,
+	}
+	src1.P = &src2
+	src := recursiveTestStruct{
+		P: &src1,
+		I: 3,
+	}
+
+	patch1 := recursiveTestStruct{
+		I: 11,
+	}
+	patch2 := recursiveTestStruct{
+		P: &patch1,
+		I: 22,
+	}
+	patch1.P = &patch2
+	patch := recursiveTestStruct{
+		P: &patch1,
+		I: 33,
+	}
+
+	result, err := dtomerge.Merge(src, patch)
+	require.NoError(t, err)
+	require.Equal(t, 33, result.I)
+	require.Equal(t, 11, result.P.I)
+	require.Equal(t, 22, result.P.P.I)
+	require.Equal(t, 11, result.P.P.P.I)
+}

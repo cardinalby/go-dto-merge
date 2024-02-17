@@ -5,7 +5,7 @@ import (
 	"reflect"
 )
 
-func mergeComparableSlicesUnique(src, patch reflect.Value, _ Options) (reflect.Value, error) {
+func mergeComparableSlicesUnique(src, patch reflect.Value) (reflect.Value, error) {
 	result := reflect.MakeSlice(src.Type(), 0, src.Len())
 	srcElemsMap := reflect.MakeMap(reflect.MapOf(src.Type().Elem(), reflect.TypeOf(true)))
 	// index all src elements
@@ -24,14 +24,14 @@ func mergeComparableSlicesUnique(src, patch reflect.Value, _ Options) (reflect.V
 	return result, nil
 }
 
-func mergeSlicesByIndex(src, patch reflect.Value, opts Options) (reflect.Value, error) {
+func mergeSlicesByIndex(src, patch reflect.Value, mCtx mergeContext) (reflect.Value, error) {
 	result := reflect.MakeSlice(src.Type(), 0, src.Len())
 	for i := 0; i < src.Len(); i++ {
 		result = reflect.Append(result, src.Index(i))
 	}
 	for i := 0; i < patch.Len(); i++ {
 		if i < result.Len() {
-			mergedElement, err := mergeAny(result.Index(i), patch.Index(i), opts)
+			mergedElement, err := mergeAny(result.Index(i), patch.Index(i), mCtx)
 			if err != nil {
 				return reflect.Value{}, fmt.Errorf("merging patch slice[%d]: %w", i, err)
 			}

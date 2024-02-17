@@ -5,7 +5,7 @@ import (
 	"reflect"
 )
 
-func mergeMaps(src, patch reflect.Value, opts Options) (reflect.Value, error) {
+func mergeMaps(src, patch reflect.Value, mCtx mergeContext) (reflect.Value, error) {
 	result := reflect.MakeMap(src.Type())
 	for _, key := range src.MapKeys() {
 		result.SetMapIndex(key, src.MapIndex(key))
@@ -16,7 +16,7 @@ func mergeMaps(src, patch reflect.Value, opts Options) (reflect.Value, error) {
 		resultValue := patchValue
 		if srcValue.IsValid() {
 			var err error
-			resultValue, err = mergeAny(srcValue, patchValue, opts)
+			resultValue, err = mergeAny(srcValue, patchValue, mCtx)
 			if err != nil {
 				return reflect.Value{}, fmt.Errorf("error merging map key '%v': %w", key, err)
 			}

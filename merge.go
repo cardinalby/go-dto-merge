@@ -5,7 +5,7 @@ import (
 )
 
 func Merge[T any](src T, patch T, opts ...Option) (T, error) {
-	res, err := mergeAny(reflect.ValueOf(src), reflect.ValueOf(patch), NewOptions(opts...))
+	res, err := mergeAny(reflect.ValueOf(src), reflect.ValueOf(patch), newMergeContext(NewOptions(opts...)))
 	if err != nil {
 		var empty T
 		return empty, err
